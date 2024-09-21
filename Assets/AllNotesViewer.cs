@@ -25,11 +25,19 @@ public class AllNotesViewer : MonoBehaviour
         foreach (var note in UIManager.Instance.allNotes.notes)
         {
             GameObject spawnedNote = Instantiate(notePrefab, parent);
-            spawnedNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = note.header;
-            spawnedNote.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = note.text;
+            spawnedNote.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = note.header;
+            spawnedNote.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = note.text;
             spawnedNote.GetComponent<NoteInfo>().selfIndex = indexStart;
+            
+            spawnedNote.transform.GetChild(0).GetComponent<ThemeColorChange>().ChangeColor(UIManager.Instance.isLightTheme);
+            spawnedNote.transform.GetChild(1).GetComponent<ThemeColorChange>().ChangeColor(UIManager.Instance.isLightTheme);
+            spawnedNote.transform.GetChild(3).GetComponent<ThemeColorChange>().ChangeColor(UIManager.Instance.isLightTheme);
+            spawnedNote.transform.GetComponent<ThemeColorChange>().ChangeColor(UIManager.Instance.isLightTheme);
+            
             indexStart++;
         }
+        
+
     }
 
     private void DeleteRenderedNotes()

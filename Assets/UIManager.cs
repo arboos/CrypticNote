@@ -20,6 +20,10 @@ public class UIManager : MonoBehaviour
     
     [HideInInspector] public string saveFile = "Assets/Resources/SavedNotes.json";
 
+    public ThemeColorChange[] themeChangedObjects;
+
+    public bool isLightTheme;
+
     private void Awake()
     {
         if (Instance == null)
@@ -27,7 +31,25 @@ public class UIManager : MonoBehaviour
             Instance = this;
         }
     }
-    
+
+    private void Start()
+    {
+        themeChangedObjects = GameObject.FindObjectsOfType<ThemeColorChange>(includeInactive:true);
+        ChangeTheme();
+        ChangeTheme();
+    }
+
+    public void ChangeTheme()
+    {
+        isLightTheme = !isLightTheme;
+        print(1);
+        themeChangedObjects = GameObject.FindObjectsOfType<ThemeColorChange>(includeInactive:true);
+        foreach (var toChange in themeChangedObjects)
+        {
+            toChange.ChangeColor();
+        }
+    }
+
     public void ReadFile()
     {
         // allNotes = JsonUtility.FromJson<AllNotes>(File.ReadAllText("Assets/Resources/SavedNotes.json"));
