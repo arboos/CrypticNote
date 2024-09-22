@@ -13,6 +13,7 @@ public class NewNoteManager : MonoBehaviour
     [SerializeField] private TMP_InputField noteText;
 
     [SerializeField] private Button saveButton;
+    [SerializeField] private TMP_InputField encKey_TMP;
 
     private bool fileReaded = false;
 
@@ -20,6 +21,10 @@ public class NewNoteManager : MonoBehaviour
 
     public int noteID;
 
+    private string[] monthStr = new []{"ZERO", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+    public ToggleGroup toogleGroup;
+    
     private void Start()
     {
         saveButton.onClick.AddListener(delegate
@@ -65,11 +70,33 @@ public class NewNoteManager : MonoBehaviour
     { 
         UIManager.Instance.allNotes.notes[noteID].header = noteHeader.text;
         UIManager.Instance.allNotes.notes[noteID].text = noteText.text;
+        UIManager.Instance.allNotes.notes[noteID].dateModified = DateTime.Now.Day.ToString() + " " +
+                                                                 monthStr[DateTime.Now.Month] + " " +
+                                                                 DateTime.Now.Year.ToString();
+
+        string encT = "";
+        // foreach (var toogle in )
+        // {
+        //     if(toogle.isOn)  toogle.name;
+        // }
+        print(toogleGroup.GetFirstActiveToggle().name + "1");
+        
+        encT = toogleGroup.GetFirstActiveToggle().name;
+        print(encT + "2");
+        
+        note.encType = encT;
+        print(note.encType + "3");
+        note.encKey = encKey_TMP.text;
+        
         UIManager.Instance.WriteFile();
-        print("Note saved: " + note.text + note.header);
+        
 
         noteHeader.text = "";
         noteText.text = "";
+        note.encKey = "ABCDEFGH";
+
+        print("Note saved: " + note.text + note.header + note.encType + note.encKey);
+        
     }
     
 }
@@ -86,4 +113,10 @@ public class Note
     public string header;
 
     public string text;
+
+    public string dateModified;
+    
+    public string encType;
+    public string encKey;
+
 }

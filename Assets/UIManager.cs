@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Baruah.EncryptionSystem;
+using Baruah.EncryptionSystem.Manager;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -34,6 +36,61 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        ReadFile();
+        
+        foreach (var note in allNotes.notes)
+        {
+            switch (note.encType)
+            {
+                case "AES":
+                    EncyptionManager.manager.AEC_key = note.encKey;
+                    EncyptionManager.manager.encryptionSystem = new AESEncryptionSystem(EncyptionManager.manager.AEC_key, EncyptionManager.manager.AEC_iv);
+                    break;
+                    
+                case "DES":
+                    EncyptionManager.manager.DES_key = note.encKey;
+                    EncyptionManager.manager.encryptionSystem = new DESEncryptionSystem(EncyptionManager.manager.DES_key);
+                    break;
+            }
+            
+            note.header = EncyptionManager.manager.Decrypt<string>(note.header);
+            note.text = EncyptionManager.manager.Decrypt<string>(note.header);
+        }
+        
+        WriteFile();
+        ReadFile();
+        
+        themeChangedObjects = GameObject.FindObjectsOfType<ThemeColorChange>(includeInactive:true);
+        ChangeTheme();
+        ChangeTheme();
+    }
+
+    private void OnApplicationQuit()
+    {
+        ReadFile();
+        
+        foreach (var note in allNotes.notes)
+        {
+            switch (note.encType)
+            {
+                case "AES":
+                    EncyptionManager.manager.AEC_key = note.encKey;
+                    EncyptionManager.manager.encryptionSystem = new AESEncryptionSystem(EncyptionManager.manager.AEC_key, EncyptionManager.manager.AEC_iv);
+                    break;
+                    
+                case "DES":
+                    EncyptionManager.manager.DES_key = note.encKey;
+                    EncyptionManager.manager.encryptionSystem = new DESEncryptionSystem(EncyptionManager.manager.DES_key);
+                    break;
+            }
+            
+            note.header = EncyptionManager.manager.Encrypt<string>(note.header);
+            note.text = EncyptionManager.manager.Encrypt<string>(note.header);
+        }
+        
+        WriteFile();
+        ReadFile();
+        
         themeChangedObjects = GameObject.FindObjectsOfType<ThemeColorChange>(includeInactive:true);
         ChangeTheme();
         ChangeTheme();
@@ -56,7 +113,6 @@ public class UIManager : MonoBehaviour
         // Does the file exist?
         if (File.Exists(saveFile))
         {
-            print("File ");
             // Read the entire file and save its contents.
             string fileContents = File.ReadAllText(saveFile);
 
@@ -74,6 +130,5 @@ public class UIManager : MonoBehaviour
         // Write JSON to file.
         File.WriteAllText(UIManager.Instance.saveFile, jsonString);
     }
-
 
 }

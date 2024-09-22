@@ -2142,10 +2142,15 @@ MonoBehaviour:
   noteHeader: {fileID: 1597182884}
   noteText: {fileID: 442387945}
   saveButton: {fileID: 31954661}
+  encKey_TMP: {fileID: 1584865349}
   note:
     header: 
     text: 
+    dateModified: 
+    encType: 
+    encKey: 
   noteID: 0
+  toogleGroup: {fileID: 1019134892}
 --- !u!114 &516013467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2276,6 +2281,7 @@ MonoBehaviour:
   DeleteNote_Warning_Window: {fileID: 444869348}
   saveFile: Assets/Resources/SavedNotes.json
   themeChangedObjects: []
+  isLightTheme: 0
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2500,7 +2506,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!1 &620186040
 GameObject:
   m_ObjectHideFlags: 0
@@ -4952,7 +4958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 1
+  m_AllowSwitchOff: 0
 --- !u!1 &1039623573
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,6 +25,7 @@ public class AllNotesViewer : MonoBehaviour
         foreach (var note in UIManager.Instance.allNotes.notes)
         {
             GameObject spawnedNote = Instantiate(notePrefab, parent);
+            spawnedNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = note.dateModified;
             spawnedNote.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = note.header;
             spawnedNote.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = note.text;
             spawnedNote.GetComponent<NoteInfo>().selfIndex = indexStart;
