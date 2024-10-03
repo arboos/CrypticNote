@@ -9,7 +9,8 @@ public class NoteInfo : MonoBehaviour
     public int selfIndex;
 
     [SerializeField] private Button deleteThisNote_Button;
-
+    [SerializeField] private Button editNoteButton;
+    
     public bool noteInited;
 
     private void OnEnable()
@@ -22,6 +23,14 @@ public class NoteInfo : MonoBehaviour
             UIManager.Instance.DeleteNoteManager.currentNoteToDelete = selfIndex;
             UIManager.Instance.AllNotesViewerManager.RenderNotes();
         });
+        
+        editNoteButton.onClick.AddListener(delegate
+        {
+            UIManager.Instance.NewNote.SetActive(true);
+            UIManager.Instance.MyNotes.SetActive(false);
+            UIManager.Instance.newNoteMan.OpenNote(this.selfIndex);
+        });
+        
         noteInited = true;
     }
 }

@@ -813,8 +813,8 @@ MonoBehaviour:
   m_MinHeight: 0
   m_PreferredWidth: 1102
   m_PreferredHeight: 556
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!114 &5333193304553199134
 MonoBehaviour:
@@ -899,6 +899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfIndex: 0
   deleteThisNote_Button: {fileID: 2567531905746248220}
+  editNoteButton: {fileID: 5078956585018279064}
   noteInited: 0
 --- !u!114 &3535302540197436598
 MonoBehaviour:

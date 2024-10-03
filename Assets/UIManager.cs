@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     public DeleteNote DeleteNoteManager;
     public AllNotesViewer AllNotesViewerManager;
     public AllNotes allNotes;
+
+    public NewNoteManager newNoteMan;
     
     public GameObject StartScreen;
     public GameObject NewNote;
@@ -36,6 +38,21 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        try
+        {
+            string fileContents = File.ReadAllText(saveFile);
+            EncyptionManager.manager.DES_key = "QlMnARtt";
+            EncyptionManager.manager.encryptionSystem = new DESEncryptionSystem(EncyptionManager.manager.DES_key);
+            fileContents = EncyptionManager.manager.Decrypt<string>(fileContents);
+        
+            File.WriteAllText(saveFile, fileContents);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exeption first launch: " + e);
+        }
+        
+        
         ReadFile();
         
         foreach (var note in allNotes.notes)
@@ -54,7 +71,7 @@ public class UIManager : MonoBehaviour
             }
             
             note.header = EncyptionManager.manager.Decrypt<string>(note.header);
-            note.text = EncyptionManager.manager.Decrypt<string>(note.header);
+            note.text = EncyptionManager.manager.Decrypt<string>(note.text);
         }
         
         WriteFile();
@@ -85,21 +102,25 @@ public class UIManager : MonoBehaviour
             }
             
             note.header = EncyptionManager.manager.Encrypt<string>(note.header);
-            note.text = EncyptionManager.manager.Encrypt<string>(note.header);
+            note.text = EncyptionManager.manager.Encrypt<string>(note.text);
         }
         
         WriteFile();
         ReadFile();
         
-        themeChangedObjects = GameObject.FindObjectsOfType<ThemeColorChange>(includeInactive:true);
-        ChangeTheme();
-        ChangeTheme();
+        string fileContents = File.ReadAllText(saveFile);
+        EncyptionManager.manager.DES_key = "QlMnARtt";
+        EncyptionManager.manager.encryptionSystem = new DESEncryptionSystem(EncyptionManager.manager.DES_key);
+        fileContents = EncyptionManager.manager.Encrypt<string>(fileContents);
+        
+        // Write JSON to file.
+        File.WriteAllText(saveFile, fileContents);
     }
-
+    
+    
     public void ChangeTheme()
     {
         isLightTheme = !isLightTheme;
-        print(1);
         themeChangedObjects = GameObject.FindObjectsOfType<ThemeColorChange>(includeInactive:true);
         foreach (var toChange in themeChangedObjects)
         {
@@ -128,7 +149,7 @@ public class UIManager : MonoBehaviour
         string jsonString = JsonUtility.ToJson(allNotes);
 
         // Write JSON to file.
-        File.WriteAllText(UIManager.Instance.saveFile, jsonString);
+        File.WriteAllText(saveFile, jsonString);
     }
 
 }

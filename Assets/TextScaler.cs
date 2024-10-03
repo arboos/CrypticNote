@@ -12,7 +12,7 @@ public class TextScaler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textPreferedSize;
 
     private float width;
-    void Start()
+    void Awake()
     {
         image = GetComponent<Image>();
         //textMP = textMP.GetComponent<LayoutElement>();
@@ -23,6 +23,7 @@ public class TextScaler : MonoBehaviour
     
     public void SetTextPreferedSize(){
         //image.rectTransform.sizeDelta = new Vector2(image.rectTransform.sizeDelta.x, textMP.preferredHeight);
+        print(gameObject.name);
         image.rectTransform.sizeDelta = new Vector2(width, textPreferedSize.preferredHeight);
         print("SetTextPreferedSize() by:" + gameObject.name + " ,prefered size is: " + textPreferedSize.preferredHeight);
     }

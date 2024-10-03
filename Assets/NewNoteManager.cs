@@ -6,6 +6,10 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Random = UnityEngine.Random;
+using Toggle = UnityEngine.UI.Toggle;
 
 public class NewNoteManager : MonoBehaviour
 {
@@ -21,9 +25,21 @@ public class NewNoteManager : MonoBehaviour
 
     public int noteID;
 
+    public GameObject aesRB;
+    public GameObject desRB;
+    public GameObject encKeyHeader;
+    public GameObject encKeyText;
+    
     private string[] monthStr = new []{"ZERO", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public ToggleGroup toogleGroup;
+    private string[] letters = new string[]
+    {
+        "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H",
+        "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P",
+        "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X",
+        "y", "Y", "z", "Z"
+    };
     
     private void Start()
     {
@@ -66,6 +82,51 @@ public class NewNoteManager : MonoBehaviour
         UIManager.Instance.ReadFile();
     }
     
+    public void OpenNote(int index)
+    {
+        UIManager.Instance.ReadFile();
+        
+        noteID = index;
+        
+        note = UIManager.Instance.allNotes.notes[noteID];
+
+        noteHeader.text = note.header;
+        noteText.text = note.text;
+
+        encKey_TMP.text = note.encKey;
+        
+        switch (note.encType)
+        {
+            case "AES":
+                encKeyHeader.SetActive(false);
+                encKeyText.SetActive(false);
+                aesRB.GetComponent<Toggle>().isOn = true;
+                desRB.GetComponent<Toggle>().isOn = false;
+                break;
+            
+            case "DES":
+                encKeyHeader.SetActive(true);
+                encKeyText.SetActive(true);
+                aesRB.GetComponent<Toggle>().isOn = false;
+                desRB.GetComponent<Toggle>().isOn = true;
+                break;
+            
+        }
+        
+        encKey_TMP.text = note.encKey;
+        fileReaded = true;
+    }
+
+    public void GenerateRandomKey()
+    {
+        string finalKey = "";
+        for (int i = 0; i < 8; i++)
+        {
+            finalKey += letters[Random.Range(0, letters.Length)];
+            encKey_TMP.text = finalKey;
+        }
+    }
+    
     public void SaveNote()
     { 
         UIManager.Instance.allNotes.notes[noteID].header = noteHeader.text;
@@ -74,21 +135,52 @@ public class NewNoteManager : MonoBehaviour
                                                                  monthStr[DateTime.Now.Month] + " " +
                                                                  DateTime.Now.Year.ToString();
 
-        string encT = "";
-        // foreach (var toogle in )
-        // {
-        //     if(toogle.isOn)  toogle.name;
-        // }
-        print(toogleGroup.GetFirstActiveToggle().name + "1");
-        
-        encT = toogleGroup.GetFirstActiveToggle().name;
-        print(encT + "2");
-        
-        note.encType = encT;
-        print(note.encType + "3");
+        UIManager.Instance.allNotes.notes[noteID].encType = toogleGroup.GetFirstActiveToggle().name;
         note.encKey = encKey_TMP.text;
+        UIManager.Instance.allNotes.notes[noteID].encKey = encKey_TMP.text;
+        
+        switch (UIManager.Instance.allNotes.notes[noteID].encType)
+        {
+            case "DES":
+                if (note.encKey.Length > 8)
+                {
+                    string keyAns = "";
+                    for(int i = 0; i < 8; i++)
+                    {
+                        keyAns += note.encKey[i];
+                    }
+                    UIManager.Instance.allNotes.notes[noteID].encKey = keyAns;
+                }
+                else if (note.encKey.Length < 8)
+                {
+                    string keyAns = "";
+                    for(int i = 0; i < 8; i++)
+                    {
+                        if (note.encKey.Length > i)
+                        {
+                            keyAns += note.encKey[i];
+                        }
+                        else
+                        {
+                            keyAns += "a";
+                        }
+                    }
+                    UIManager.Instance.allNotes.notes[noteID].encKey = keyAns;
+                }
+                else
+                {
+                    UIManager.Instance.allNotes.notes[noteID].encKey = encKey_TMP.text;
+                }
+                break;
+            
+            case "AES":
+                UIManager.Instance.allNotes.notes[noteID].encKey = "A60A5770FE5E7AB200BA9CFC94E4E8B0";
+                break;
+        }
+        
         
         UIManager.Instance.WriteFile();
+        UIManager.Instance.ReadFile();
         
 
         noteHeader.text = "";
@@ -96,7 +188,6 @@ public class NewNoteManager : MonoBehaviour
         note.encKey = "ABCDEFGH";
 
         print("Note saved: " + note.text + note.header + note.encType + note.encKey);
-        
     }
     
 }
